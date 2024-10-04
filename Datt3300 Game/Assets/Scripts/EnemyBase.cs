@@ -5,10 +5,19 @@ using UnityEngine;
 public class EnemyBase : MonoBehaviour
 {
     public int health, baseDamage;
+    [SerializeField] private GameObject xp;
 
-    void OnCollisionEnter2D(Collision2D other){
+    void OnTriggerEnter2D(Collider2D other){
         if(other.gameObject.tag == "Player Attack"){
-            //take damage
+            health -= (int)other.gameObject.GetComponent<BulletBase>().damage;
+            Destroy(other.gameObject);
+            if(health <= 0){
+                Instantiate(xp, transform.position, Quaternion.identity);
+                Destroy(gameObject);
+            }
+            else{
+                gameObject.GetComponent<Rigidbody2D>().AddForce(other.gameObject.GetComponent<Rigidbody2D>().velocity / 5, ForceMode2D.Impulse);
+            }
         }
     }
 }

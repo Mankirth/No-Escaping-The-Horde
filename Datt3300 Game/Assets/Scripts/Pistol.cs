@@ -1,0 +1,56 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+public class Pistol : MonoBehaviour
+{
+    public float reloadTimer, fireRate, maxAmmo, bulletSpeed, dmgMultiplier;
+    private float reloadTimerReset, fireRateReset, ammo;
+    [SerializeField] private GameObject bulletPrefab;
+    // Start is called before the first frame update
+    void Start()
+    {
+        fireRateReset = fireRate;
+        ammo = maxAmmo;
+        reloadTimerReset = reloadTimer;
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        if(ammo > 0 && fireRate <= 0){
+            Shoot();
+            fireRate = fireRateReset * transform.parent.GetComponent<PlayerController>().fireRateMultiplier;
+        }
+        else if(ammo > 0 && fireRate > 0){
+            fireRate -= Time.deltaTime;
+        }
+        else if(reloadTimer > 0){
+            reloadTimer -= Time.deltaTime;
+        }
+        else if(reloadTimer <= 0){
+            reloadTimer = reloadTimerReset;
+            ammo = maxAmmo;
+        }
+    }
+
+    private void Shoot(){
+        GameObject chosenEnemy = GameObject.FindGameObjectWithTag("Enemy");
+        if(chosenEnemy != null){
+            float shortestDistance = Vector3.Distance(chosenEnemy.transform.position, transform.position);
+            foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy")){
+                if(Vector3.Distance(enemy.transform.position, transform.position) < shortestDistance){
+                    chosenEnemy = enemy;
+                    shortestDistance = Vector3.Distance(chosenEnemy.transform.position, transform.position);
+                }
+            }
+            if(chosenEnemy != null && shortestDistance <= transform.parent.GetComponent<PlayerController>().attackRange){
+                GameObject spawned = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                spawned.GetComponent<Rigidbody2D>().AddForce((chosenEnemy.transform.position - transform.position).normalized * bulletSpeed * transform.parent.GetComponent<PlayerController>().bulletSpeedMultiplier, ForceMode2D.Impulse);
+                spawned.GetComponent<BulletBase>().damage = transform.parent.GetComponent<PlayerController>().baseDamage * dmgMultiplier;
+            }
+            ammo -= 1;
+        }
+    }
+}

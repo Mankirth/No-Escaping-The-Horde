@@ -12,6 +12,7 @@ public class BasicEnemy : MonoBehaviour
     void FixedUpdate()
     {
         toPlayer = GameObject.FindGameObjectWithTag("Player").transform.position - transform.position;
-        rb.velocity = new Vector2(toPlayer.x, toPlayer.y).normalized * moveSpeed;
+        if(rb.velocity.magnitude < moveSpeed)
+            rb.AddForce(new Vector2(toPlayer.x, toPlayer.y).normalized * moveSpeed, ForceMode2D.Force);
     }
 }
