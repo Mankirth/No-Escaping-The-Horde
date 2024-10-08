@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
+        timerMultiplier.text = (killTimerMultiplier) * 100 + "%";
     }
 
     // Update is called once per frame
@@ -107,7 +108,7 @@ public class PlayerController : MonoBehaviour
     void OnCollisionStay2D(Collision2D other){
         if((other.gameObject.tag == "Enemy Attack" || other.gameObject.tag == "Enemy") && iframes <= 0){
             killTimerMultiplier += other.gameObject.GetComponent<EnemyBase>().baseDamage;
-            timerMultiplier.text = "+" + (killTimerMultiplier - 1) * 100 + "%";
+            timerMultiplier.text = (killTimerMultiplier) * 100 + "%";
             iframes = 0.5f;
         }
     }
@@ -122,6 +123,7 @@ public class PlayerController : MonoBehaviour
 
     public void HealthMultiplier(float percent){
         killTimerMultiplier += percent;
+        timerMultiplier.text = (killTimerMultiplier) * 100 + "%";
     }
 
     public void MoveSpeed(float speed){

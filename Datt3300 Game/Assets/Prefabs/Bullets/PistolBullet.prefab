@@ -162,4 +162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  destroyOnHit: 1
   deathTimer: 3
+  useDeathTimer: 1
