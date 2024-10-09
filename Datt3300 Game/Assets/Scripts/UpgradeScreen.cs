@@ -12,7 +12,7 @@ public class UpgradeScreen : MonoBehaviour
         for(int i = 0; i < 3; i++){
             if(cardPool.Count > 0){
                 int chosen = UnityEngine.Random.Range(0, cardPool.Count);
-                cardPool[chosen].GetComponent<RectTransform>().position = transform.position + new Vector3(-300 + (i * 300), 0, 0);
+                cardPool[chosen].GetComponent<RectTransform>().position = transform.position + new Vector3(-10 + (i * 10), 0, 0);
                 cardPool.RemoveAt(chosen);
             }
         }

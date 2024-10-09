@@ -107,8 +107,20 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D other){
         if((other.gameObject.tag == "Enemy Attack" || other.gameObject.tag == "Enemy") && iframes <= 0){
-            killTimerMultiplier += other.gameObject.GetComponent<EnemyBase>().baseDamage;
-            timerMultiplier.text = (killTimerMultiplier) * 100 + "%";
+            if(other.gameObject.GetComponent<EnemyBase>() != null)
+                killTimerMultiplier += other.gameObject.GetComponent<EnemyBase>().baseDamage;
+            else if(other.gameObject.GetComponent<BulletBase>() != null)
+                killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage;
+            timerMultiplier.text = killTimerMultiplier * 100 + "%";
+            iframes = 0.5f;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other){
+        if(other.gameObject.tag == "Enemy Attack" && iframes <= 0){
+            killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage;
+            timerMultiplier.text = killTimerMultiplier * 100 + "%";
+            Destroy(other.gameObject);
             iframes = 0.5f;
         }
     }
