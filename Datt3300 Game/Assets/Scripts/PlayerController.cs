@@ -4,21 +4,28 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private TMP_Text timerText, timerMultiplier;
-    [SerializeField] private GameObject tempWalls, UpgradeScreen;
-    public float killTimerMultiplier, moveSpeed, baseDamage, fireRateMultiplier, bulletSpeedMultiplier, attackRange;
-    private float killTimer = 120, minutes, seconds, iframes;
-    private bool moveL, moveR, moveU, moveD;
+    [SerializeField] private TMP_Text timerText, timerMultiplier, leveltxt;
+    [SerializeField] private GameObject UpgradeScreen;
+    [SerializeField] private CircleCollider2D pickup;
+    public bool explosive, pierce;
+    public float killTimerMultiplier, moveSpeed, baseDamage, fireRateMultiplier, bulletSpeedMultiplier, enemiesKilled;
+    private float killTimer = 360, minutes, seconds, iframes, armour = 1, subTimer = 10;
+    private bool moveL, moveR, moveU, moveD, incrementHealth, incrementDmg, incs, subTime;
     public int xp, xpCap, level = 1;
     private Rigidbody2D rb;
+    public Vector2 direction = Vector2.left;
+    [SerializeField] private Scrollbar scrollbar;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
-        timerMultiplier.text = (killTimerMultiplier) * 100 + "%";
+        timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
     }
 
     // Update is called once per frame
@@ -50,6 +57,7 @@ public class PlayerController : MonoBehaviour
     }
 
     void FixedUpdate(){
+        scrollbar.value = (float)xp / xpCap;
         if(iframes > 0)
             iframes -= Time.deltaTime;
         if(killTimer > 0){
@@ -62,8 +70,6 @@ public class PlayerController : MonoBehaviour
             timerText.text = "00:00";
             Kill();
         }
-
-        tempWalls.transform.position = new Vector3(transform.position.x, 0, 0);
         
         if(moveL && !moveR){
             rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
@@ -84,19 +90,49 @@ public class PlayerController : MonoBehaviour
         else{
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
+
+        if(rb.velocity.magnitude > 0){
+            direction = rb.velocity.normalized;
+        }
+
+        if(!incs && enemiesKilled % 25 == 0){
+            if(incrementDmg)
+                baseDamage += 0.25f;
+            if(incrementHealth)
+                killTimer += 1;
+            incs = true;
+        }
+        else if(incs == true && enemiesKilled % 25 != 0)
+            incs = false;
+        
+        if(subTime)
+            subTimer -= Time.deltaTime;
+
+        if(subTimer <= 0 && killTimerMultiplier >= 0.95f){
+            killTimerMultiplier -= 0.05f;
+            timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
+            subTimer = 10;
+        }
     }
 
     private void Kill(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameObject.FindGameObjectWithTag("UpgradeScreen").GetComponent<GameMenu>().Death();
     }
-
     public void LevelUp(){
-        level += 1;
-        xpCap = (int)Math.Pow(xpCap, 1.5f);
-        xp = 0;
-        Time.timeScale = 0f;
-        UpgradeScreen.SetActive(true);
-        UpgradeScreen.GetComponent<UpgradeScreen>().Activate();
+        if(UpgradeScreen.GetComponent<UpgradeScreen>().upgradeCards.Count > 0){
+            scrollbar.value = 1;
+            level += 1;
+            if(level <= 5)
+                xpCap = 10 * level;
+            else if(level <= 10)
+                xpCap = 25 * level;
+            else
+                xpCap = 40 * level;
+            leveltxt.text = "Level: " + level;
+            Time.timeScale = 0f;
+            UpgradeScreen.SetActive(true);
+            UpgradeScreen.GetComponent<UpgradeScreen>().Activate();
+        }
     }
 
     public void TestUpgrade(){
@@ -108,20 +144,37 @@ public class PlayerController : MonoBehaviour
     void OnCollisionStay2D(Collision2D other){
         if((other.gameObject.tag == "Enemy Attack" || other.gameObject.tag == "Enemy") && iframes <= 0){
             if(other.gameObject.GetComponent<EnemyBase>() != null)
-                killTimerMultiplier += other.gameObject.GetComponent<EnemyBase>().baseDamage;
+                killTimerMultiplier += other.gameObject.GetComponent<EnemyBase>().baseDamage * armour;
             else if(other.gameObject.GetComponent<BulletBase>() != null)
-                killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage;
-            timerMultiplier.text = killTimerMultiplier * 100 + "%";
+                killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage * armour;
+            timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
             iframes = 0.5f;
         }
     }
 
     void OnTriggerEnter2D(Collider2D other){
         if(other.gameObject.tag == "Enemy Attack" && iframes <= 0){
-            killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage;
-            timerMultiplier.text = killTimerMultiplier * 100 + "%";
+            killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage * armour;
+            timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
             Destroy(other.gameObject);
             iframes = 0.5f;
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D other){
+        if(other.tag == "xp"){
+            other.attachedRigidbody.AddForce((transform.position - other.transform.position).normalized * 250, ForceMode2D.Force);
+            if(Vector3.Distance(transform.position, other.transform.position) <= 0.5){
+                if(other.gameObject.name != "Boss Xp(Clone)")
+                    xp += 1;
+                else
+                    xp += 100;
+                if(xp / xpCap >= 1){
+                    xp = xp % xpCap;
+                    LevelUp();
+                }
+                Destroy(other.gameObject);
+            }
         }
     }
 
@@ -135,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
     public void HealthMultiplier(float percent){
         killTimerMultiplier += percent;
-        timerMultiplier.text = (killTimerMultiplier) * 100 + "%";
+        timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
     }
 
     public void MoveSpeed(float speed){
@@ -144,14 +197,6 @@ public class PlayerController : MonoBehaviour
 
     public void MoveSpeedMultiplier(float speed){
         moveSpeed = moveSpeed * speed;
-    }
-
-    public void AttackRange(float range){
-        attackRange += range;
-    }
-
-    public void AttackRangeMultiplier(float range){
-        attackRange = attackRange * range;
     }
 
     public void FireRate(float speed){
@@ -180,6 +225,34 @@ public class PlayerController : MonoBehaviour
 
     public void AddWeapon(GameObject weaponPrefab){
         Instantiate(weaponPrefab, transform.position, transform.rotation, transform);
+    }
+
+    public void IncreasePickup(float amount){
+        pickup.radius = pickup.radius * amount;
+    }
+
+    public void ExplodingRounds(){
+        explosive = true;
+    }
+
+    public void IncHealth(){
+        incrementHealth = true;
+    }
+
+    public void IncDmg(){
+        incrementDmg = true;
+    }
+
+    public void Armour(){
+        armour = 0.5f;
+    }
+
+    public void Pierce(){
+        pierce = true;
+    }
+
+    public void Vaccine(){
+        subTime = true;
     }
 
 }

@@ -101,8 +101,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 20
-  baseDamage: 1
+  baseDamage: 0.5
   xp: {fileID: 6339262946618120700, guid: 0bac3d4a9b75c184dbac31b317635a4d, type: 3}
+  explosion: {fileID: 7993945212602426650, guid: e7c8d83744e04424da66602426c3a6eb, type: 3}
+  explosionPrefab: {fileID: 0}
+  exploding: 0
 --- !u!114 &6079039200316915240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 6894398775042430433}
-  moveSpeed: 5
+  moveSpeed: 10
 --- !u!61 &911113987259595531
 BoxCollider2D:
   m_ObjectHideFlags: 0

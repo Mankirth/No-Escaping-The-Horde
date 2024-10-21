@@ -6,7 +6,7 @@ using System;
 public class Pistol : MonoBehaviour
 {
     public float reloadTimer, fireRate, maxAmmo, bulletSpeed, dmgMultiplier;
-    private float reloadTimerReset, fireRateReset, ammo;
+    private float reloadTimerReset, fireRateReset, ammo, attackRange = 10;
     [SerializeField] private GameObject bulletPrefab;
     // Start is called before the first frame update
     void Start()
@@ -45,12 +45,18 @@ public class Pistol : MonoBehaviour
                     shortestDistance = Vector3.Distance(chosenEnemy.transform.position, transform.position);
                 }
             }
-            if(chosenEnemy != null && shortestDistance <= transform.parent.GetComponent<PlayerController>().attackRange){
+            if(chosenEnemy != null && shortestDistance <= attackRange){
                 GameObject spawned = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
                 spawned.GetComponent<Rigidbody2D>().AddForce((chosenEnemy.transform.position - transform.position).normalized * bulletSpeed * transform.parent.GetComponent<PlayerController>().bulletSpeedMultiplier, ForceMode2D.Impulse);
                 spawned.GetComponent<BulletBase>().damage = transform.parent.GetComponent<PlayerController>().baseDamage * dmgMultiplier;
             }
             ammo -= 1;
         }
+    }
+
+    public void PistolUp(){
+        attackRange = attackRange * 1.5f;
+        reloadTimerReset = reloadTimerReset / 2;
+        fireRateReset = fireRateReset / 2;
     }
 }

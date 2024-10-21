@@ -161,7 +161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8493813e7b0bc4c8380b4c73585ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
+  damage: 0.3
   destroyOnHit: 1
   deathTimer: 25
   useDeathTimer: 1
+  bounce: {fileID: 0}

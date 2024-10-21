@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3981510019134404309}
   - component: {fileID: 2232532357741279654}
   - component: {fileID: -7763234697578027361}
+  - component: {fileID: -2943736153206079097}
   m_Layer: 3
   m_Name: PistolBullet
   m_TagString: Player Attack
@@ -165,3 +166,39 @@ MonoBehaviour:
   destroyOnHit: 1
   deathTimer: 3
   useDeathTimer: 1
+  bounce: {fileID: -2943736153206079097}
+--- !u!58 &-2943736153206079097
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038041424318323952}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: e7fd3e6f57008ee4789f9f32656bf559, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 511
+  m_LayerOverridePriority: 1
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5

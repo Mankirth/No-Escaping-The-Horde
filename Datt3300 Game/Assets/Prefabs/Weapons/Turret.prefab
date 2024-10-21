@@ -46,6 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turret: 1
   bulletPrefab: {fileID: 2038041424318323952, guid: d8f69354f5688f34c9c5390a096e868c, type: 3}
-  fireRate: 0.25
-  bulletSpeed: 80
-  dmgMultiplier: 0.75
+  fireRate: 0.15
+  bulletSpeed: 60
+  dmgMultiplier: 1.25

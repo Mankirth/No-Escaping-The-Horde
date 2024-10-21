@@ -8,7 +8,7 @@ public class Orbit : MonoBehaviour
     [SerializeField] private bool turret;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float fireRate, bulletSpeed, dmgMultiplier;
-    private float fireRateReset;
+    private float fireRateReset, turretInvert = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,8 +19,8 @@ public class Orbit : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.Rotate(new Vector3(0, 0, 1), parent.GetComponent<PlayerController>().bulletSpeedMultiplier * Time.deltaTime * bulletSpeed);
         if(turret){
+            turretInvert = -1;
             fireRate -= Time.deltaTime;
             if(fireRate <= 0){
                 GameObject spawned = Instantiate(bulletPrefab, transform.position, transform.rotation);
@@ -29,5 +29,7 @@ public class Orbit : MonoBehaviour
                 fireRate = fireRateReset;
             }
         }
+
+        transform.Rotate(new Vector3(0, 0, 1), parent.GetComponent<PlayerController>().bulletSpeedMultiplier * turretInvert * Time.deltaTime * bulletSpeed);
     }
 }

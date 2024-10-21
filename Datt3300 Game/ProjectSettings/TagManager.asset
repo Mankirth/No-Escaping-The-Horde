@@ -7,6 +7,8 @@ TagManager:
   - Enemy Attack
   - Enemy
   - Player Attack
+  - xp
+  - UpgradeScreen
   layers:
   - Default
   - TransparentFX
@@ -15,10 +17,10 @@ TagManager:
   - Water
   - UI
   - Enemy Attack
-  - 
-  - 
-  - 
-  - 
+  - xp
+  - Player
+  - Environment
+  - Wall Check
   - 
   - 
   - 

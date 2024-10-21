@@ -6,9 +6,9 @@ public class UpgradeScreen : MonoBehaviour
 {
     public List<GameObject> upgradeCards;
     public List<GameObject> cardPool;
+    
     public void Activate(){
         cardPool = new List<GameObject>(upgradeCards);
-        Debug.Log(cardPool.Count);
         for(int i = 0; i < 3; i++){
             if(cardPool.Count > 0){
                 int chosen = UnityEngine.Random.Range(0, cardPool.Count);

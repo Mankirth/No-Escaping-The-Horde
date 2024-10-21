@@ -7,6 +7,12 @@ public class XpPoint : MonoBehaviour
     private bool triggered;
     private float speed = 50;
 
+    void Start(){
+        UpdateRange();
+    }
+    public void UpdateRange(){
+        //gameObject.GetComponent<CircleCollider2D>().radius = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().pickupRange;
+    }
     void FixedUpdate(){
         if(triggered){
             speed += Time.deltaTime * 20;
@@ -14,12 +20,14 @@ public class XpPoint : MonoBehaviour
         }
     }
     void OnTriggerStay2D(Collider2D other){
-        if(other.gameObject.tag == "Player"){
+        if(other.gameObject.tag == "xp"){
             triggered = true;
             if(Vector3.Distance(transform.position, other.transform.position) <= 0.5){
                 other.gameObject.GetComponent<PlayerController>().xp += 1;
-                if(other.gameObject.GetComponent<PlayerController>().xp >= other.gameObject.GetComponent<PlayerController>().xpCap)
+                if(other.gameObject.GetComponent<PlayerController>().xp / other.gameObject.GetComponent<PlayerController>().xpCap >= 1){
+                    other.gameObject.GetComponent<PlayerController>().xp = other.gameObject.GetComponent<PlayerController>().xp % other.gameObject.GetComponent<PlayerController>().xpCap;
                     other.gameObject.GetComponent<PlayerController>().LevelUp();
+                }
                 Destroy(gameObject);
             }
         }

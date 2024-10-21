@@ -17,13 +17,12 @@ public class RangedEnemy : MonoBehaviour
     void FixedUpdate()
     {
         toPlayer = GameObject.FindGameObjectWithTag("Player").transform.position - transform.position;
-        if(rb.velocity.magnitude < moveSpeed && toPlayer.magnitude > maxDistance)
+        if(rb.velocity.magnitude < moveSpeed && Vector2.Distance(transform.position, toPlayer) > maxDistance)
             rb.AddForce(new Vector2(toPlayer.x, toPlayer.y).normalized * moveSpeed, ForceMode2D.Force);
         fireRate -= Time.deltaTime;
         if(fireRate <= 0){
             GameObject spawned = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
             spawned.GetComponent<Rigidbody2D>().AddForce(toPlayer.normalized * 5, ForceMode2D.Impulse);
-            spawned.GetComponent<BulletBase>().damage = 0.5f;
             fireRate = fireRateReset;
         }
     }
