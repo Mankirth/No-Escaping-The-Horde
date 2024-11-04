@@ -38,8 +38,8 @@ public class Spawner : MonoBehaviour
             spawnInterval -= Time.deltaTime;
         else{
             for(int y = 0; y < n; y++){
+                rand = UnityEngine.Random.Range(0, 101);
                 for(int i = 0; i < weights.Length; i++){
-                    rand = UnityEngine.Random.Range(0, 101);
                     if(rand >= weights[i]){
                         Spawn(enemyPrefabs[i]);
                         break;

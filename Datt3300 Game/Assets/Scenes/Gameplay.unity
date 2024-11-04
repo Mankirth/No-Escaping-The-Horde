@@ -4165,7 +4165,7 @@ MonoBehaviour:
   - {fileID: 436062044995039218, guid: d1d6c49a723863449963c151889febfa, type: 3}
   weights:
   - 30
-  - 25
+  - 10
   - 0
   leftx: -21
   rightx: 21
