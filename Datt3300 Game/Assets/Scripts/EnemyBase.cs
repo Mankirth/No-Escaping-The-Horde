@@ -10,6 +10,7 @@ public class EnemyBase : MonoBehaviour
     public Observable<int> hp = new Observable<int>();
     [SerializeField] private GameObject xp, explosion, explosionPrefab;
     [SerializeField] private bool exploding;
+    [SerializeField] private AudioClip deathSound;
     private float dmgTimer;
     private Color origColor;
     private bool firstCall = true;
@@ -61,6 +62,7 @@ public class EnemyBase : MonoBehaviour
     
     void OnDestroy(){
         if(gameObject.scene.isLoaded){
+            AudioMaster.instance.PlaySFXClip(deathSound, transform, 1f);
             hp.Changed -= OnHpChanged;
             if(GameObject.FindGameObjectWithTag("Player") != null){
                 Instantiate(xp, transform.position, Quaternion.identity);

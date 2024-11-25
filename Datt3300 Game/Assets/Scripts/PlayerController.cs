@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TMP_Text timerText, timerMultiplier, leveltxt;
     [SerializeField] private GameObject UpgradeScreen;
     [SerializeField] private CircleCollider2D pickup;
+    [SerializeField] private AudioSource steps;
+    [SerializeField] private AudioClip pickupSound, hurtSound;
     public bool explosive, pierce;
     public float killTimerMultiplier, moveSpeed, baseDamage, fireRateMultiplier, bulletSpeedMultiplier, enemiesKilled;
     private float killTimer = 360, minutes, seconds, iframes, armour = 1, subTimer = 10;
@@ -91,9 +93,13 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
 
-        if(rb.velocity.magnitude > 0){
+        if(rb.velocity.magnitude > 0 && Time.timeScale != 1){
+            if(!steps.isPlaying)
+                steps.Play();
             direction = rb.velocity.normalized;
         }
+        else
+            steps.Stop();
 
         if(!incs && enemiesKilled % 25 == 0){
             if(incrementDmg)
@@ -165,6 +171,7 @@ public class PlayerController : MonoBehaviour
         if(other.tag == "xp"){
             other.attachedRigidbody.AddForce((transform.position - other.transform.position).normalized * 250, ForceMode2D.Force);
             if(Vector3.Distance(transform.position, other.transform.position) <= 0.5){
+                AudioMaster.instance.PlaySFXClip(pickupSound, transform, 0.05f);
                 if(other.gameObject.name != "Boss Xp(Clone)")
                     xp += 1;
                 else

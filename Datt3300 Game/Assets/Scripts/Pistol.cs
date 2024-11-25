@@ -8,6 +8,7 @@ public class Pistol : MonoBehaviour
     public float reloadTimer, fireRate, maxAmmo, bulletSpeed, dmgMultiplier;
     private float reloadTimerReset, fireRateReset, ammo, attackRange = 10;
     [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private AudioClip shootSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +50,7 @@ public class Pistol : MonoBehaviour
                 GameObject spawned = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
                 spawned.GetComponent<Rigidbody2D>().AddForce((chosenEnemy.transform.position - transform.position).normalized * bulletSpeed * transform.parent.GetComponent<PlayerController>().bulletSpeedMultiplier, ForceMode2D.Impulse);
                 spawned.GetComponent<BulletBase>().damage = transform.parent.GetComponent<PlayerController>().baseDamage * dmgMultiplier;
+                AudioMaster.instance.PlaySFXClip(shootSound, transform, 0.1f);
             }
             ammo -= 1;
         }

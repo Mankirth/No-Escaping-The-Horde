@@ -106,6 +106,7 @@ MonoBehaviour:
   explosion: {fileID: 7993945212602426650, guid: e7c8d83744e04424da66602426c3a6eb, type: 3}
   explosionPrefab: {fileID: 0}
   exploding: 0
+  deathSound: {fileID: 8300000, guid: a14ca39e666e15b42b4257e82c47791a, type: 3}
 --- !u!114 &4150711913264450128
 MonoBehaviour:
   m_ObjectHideFlags: 0

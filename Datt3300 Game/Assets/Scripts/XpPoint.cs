@@ -7,6 +7,8 @@ public class XpPoint : MonoBehaviour
     private bool triggered;
     private float speed = 50;
 
+    [SerializeField] private AudioClip pickupSound;
+
     void Start(){
         UpdateRange();
     }
@@ -23,6 +25,7 @@ public class XpPoint : MonoBehaviour
         if(other.gameObject.tag == "xp"){
             triggered = true;
             if(Vector3.Distance(transform.position, other.transform.position) <= 0.5){
+                AudioMaster.instance.PlaySFXClip(pickupSound, transform, 1f);
                 other.gameObject.GetComponent<PlayerController>().xp += 1;
                 if(other.gameObject.GetComponent<PlayerController>().xp / other.gameObject.GetComponent<PlayerController>().xpCap >= 1){
                     other.gameObject.GetComponent<PlayerController>().xp = other.gameObject.GetComponent<PlayerController>().xp % other.gameObject.GetComponent<PlayerController>().xpCap;
