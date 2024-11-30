@@ -14,6 +14,14 @@ public class RescueTimer : MonoBehaviour
     private bool triggered = false;
     private Vector3 spawnPos;
 
+    void Start(){
+        InvokeRepeating("Layer", 30, 30);
+    }
+
+    void Layer(){
+        AudioMaster.instance.AddLayer();
+    }
+    
     // Update is called once per frame
     void FixedUpdate()
     {

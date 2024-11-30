@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
         timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
+        AudioMaster.instance.PlaySongs();
+        AudioMaster.instance.ResetLayers();
+        AudioMaster.instance.AddLayer();
     }
 
     // Update is called once per frame

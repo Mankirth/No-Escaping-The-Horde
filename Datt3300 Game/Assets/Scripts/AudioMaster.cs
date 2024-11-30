@@ -6,7 +6,8 @@ using UnityEngine;
 public class AudioMaster : MonoBehaviour
 {
     public static AudioMaster instance;
-    [SerializeField] private AudioSource sfxObj, musiObj;
+    [SerializeField] private AudioSource sfxObj;
+    [SerializeField] public AudioSource[] musicStems;
     // https://www.youtube.com/watch?v=DU7cgVsU2rM
     private void Awake(){
         if(instance == null){
@@ -15,6 +16,7 @@ public class AudioMaster : MonoBehaviour
     }
 
     public void PlaySFXClip(AudioClip audioClip, Transform spawnTransform, float volume){
+        Debug.Log(audioClip.name);
         AudioSource audioSource = Instantiate(sfxObj, spawnTransform.position, Quaternion.identity);
         audioSource.clip = audioClip;
         audioSource.volume = volume;
@@ -23,5 +25,27 @@ public class AudioMaster : MonoBehaviour
         float clipLength = audioSource.clip.length;
         DontDestroyOnLoad(audioSource.gameObject);
         Destroy(audioSource.gameObject, clipLength);
+    }
+
+    public void PlaySongs(){
+        foreach(AudioSource layer in instance.musicStems){
+            layer.Play();
+        }
+    }
+
+    public void AddLayer(){
+        foreach(AudioSource layer in instance.musicStems){
+            if(layer.volume != 1){
+                layer.volume = 1;
+                break;
+            }
+        }
+    }
+
+    public void ResetLayers(){
+        foreach(AudioSource layer in instance.musicStems){
+            layer.volume = 0;
+        }
+        musicStems[0].volume = 1;
     }
 }
