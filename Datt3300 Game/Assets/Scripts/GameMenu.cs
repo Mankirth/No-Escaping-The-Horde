@@ -20,6 +20,7 @@ public class GameMenu : MonoBehaviour
     public void MainMenu(){
         ButtonSound();
         Time.timeScale = 1;
+        AudioMaster.instance.ResetLayers();
         SceneManager.LoadScene("MainMenu");
     }
     

@@ -11,6 +11,10 @@ public class BasicEnemy : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(rb.velocity.x < 0)
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        else if(rb.velocity.x > 0)
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
         toPlayer = GameObject.FindGameObjectWithTag("Player").transform.position - transform.position;
         if(rb.velocity.magnitude < moveSpeed)
             rb.AddForce(new Vector2(toPlayer.x, toPlayer.y).normalized * moveSpeed, ForceMode2D.Force);

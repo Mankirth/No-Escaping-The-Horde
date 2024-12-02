@@ -11,7 +11,7 @@ public class BoomerProj : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.Rotate(new Vector3(0, 0, 1), 150 * Time.deltaTime);
+        transform.Rotate(new Vector3(0, 0, 1) * 10);
         if(killTime > 0)
             killTime -= Time.deltaTime;
         else

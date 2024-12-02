@@ -50,7 +50,7 @@ public class Pistol : MonoBehaviour
                 GameObject spawned = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
                 spawned.GetComponent<Rigidbody2D>().AddForce((chosenEnemy.transform.position - transform.position).normalized * bulletSpeed * transform.parent.GetComponent<PlayerController>().bulletSpeedMultiplier, ForceMode2D.Impulse);
                 spawned.GetComponent<BulletBase>().damage = transform.parent.GetComponent<PlayerController>().baseDamage * dmgMultiplier;
-                AudioMaster.instance.PlaySFXClip(shootSound, transform, 0.1f);
+                AudioMaster.instance.PlaySFXClip(shootSound, transform, 0.05f);
             }
             ammo -= 1;
         }

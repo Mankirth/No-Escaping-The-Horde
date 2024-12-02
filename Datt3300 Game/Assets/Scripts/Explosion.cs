@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
+
+    [SerializeField] private GameObject explosionfx;
     // void OnTriggerEnter2D(Collider2D other)
     // {
     //     if(other.tag == "Enemy"){
@@ -25,6 +27,8 @@ public class Explosion : MonoBehaviour
     // Update is called once per frame
     IEnumerator Explode()
     {
+        GameObject spawned = Instantiate(explosionfx, transform.position, Quaternion.identity);
+        Destroy(spawned, 0.25f);
         yield return new WaitForSeconds(0.1f);
         
         Destroy(gameObject);

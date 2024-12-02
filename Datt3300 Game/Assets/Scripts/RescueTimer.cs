@@ -32,7 +32,7 @@ public class RescueTimer : MonoBehaviour
             gameObject.GetComponent<TMP_Text>().text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
         else if(!triggered){
-            spawnPos = player.transform.position + Vector3.right * ((UnityEngine.Random.Range(0, 1) * 2) - 1) * 50;
+            spawnPos = player.transform.position + Vector3.right * ((UnityEngine.Random.Range(0, 2) * 2) - 1) * 50;
             if(spawnPos != Vector3.zero && Physics2D.OverlapCircle(spawnPos, 0.1f, 512) != null){
                 spawnPos = new Vector3(-spawnPos.x, spawnPos.y, 0);
                 if(spawnPos != Vector3.zero && Physics2D.OverlapCircle(spawnPos, 0.1f, 512) != null){   

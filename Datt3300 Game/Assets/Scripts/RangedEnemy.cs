@@ -17,6 +17,12 @@ public class RangedEnemy : MonoBehaviour
     void FixedUpdate()
     {
         toPlayer = GameObject.FindGameObjectWithTag("Player").transform.position - transform.position;
+
+        if(toPlayer.x < 0)
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        else if(toPlayer.x > 0)
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        
         if(rb.velocity.magnitude < moveSpeed && Vector2.Distance(transform.position, toPlayer) > maxDistance)
             rb.AddForce(new Vector2(toPlayer.x, toPlayer.y).normalized * moveSpeed, ForceMode2D.Force);
         fireRate -= Time.deltaTime;
