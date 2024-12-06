@@ -15,7 +15,7 @@ public class RescueTimer : MonoBehaviour
     private Vector3 spawnPos;
 
     void Start(){
-        InvokeRepeating("Layer", 30, 30);
+        InvokeRepeating("Layer", 25, 25);
     }
 
     void Layer(){
