@@ -1,15 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private TMP_Text timerText, timerMultiplier, leveltxt;
+    [SerializeField] private TMP_Text timerMultiplier, leveltxt;
+    [SerializeField] private UnityEngine.UI.Slider infectionBar;
     [SerializeField] private GameObject UpgradeScreen;
     [SerializeField] private CircleCollider2D pickup;
     [SerializeField] private AudioSource steps;
@@ -17,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     public bool explosive, pierce;
     public float killTimerMultiplier, moveSpeed, baseDamage, fireRateMultiplier, bulletSpeedMultiplier, enemiesKilled;
-    private float killTimer = 360, minutes, seconds, iframes, armour = 1, subTimer = 10, redVal = 255, multiplierScale = 1;
+    private float killTimer = 360, iframes, armour = 1, subTimer = 10, redVal = 255, multiplierScale = 1;
     private bool moveL, moveR, moveU, moveD, incrementHealth, incrementDmg, incs, subTime, dying;
     public int xp, xpCap, level = 1;
     private Rigidbody2D rb;
@@ -30,8 +28,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
-        timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
-        //AudioMaster.instance.PlaySongs();
+        timerMultiplier.text = Math.Round(killTimerMultiplier, 2) + "x";
         AudioMaster.instance.ResetLayers();
         AudioMaster.instance.AddLayer();
         animator = gameObject.GetComponent<Animator>();
@@ -76,9 +73,9 @@ public class PlayerController : MonoBehaviour
             multiplierScale -= Time.deltaTime * 0.5f;
             timerMultiplier.transform.localScale = multiplierOriginalScale * multiplierScale;
         }
-        if(rb.velocity.x < 0)
+        if(rb.velocity.x < 0 && !dying)
             gameObject.GetComponent<SpriteRenderer>().flipX = true;
-        else if(rb.velocity.x > 0)
+        else if(rb.velocity.x > 0 && !dying)
             gameObject.GetComponent<SpriteRenderer>().flipX = false;
         animator.SetFloat("vel", rb.velocity.magnitude);
         scrollbar.value = (float)xp / xpCap;
@@ -86,14 +83,10 @@ public class PlayerController : MonoBehaviour
             iframes -= Time.deltaTime;
         if(killTimer > 0){
             killTimer -= Time.deltaTime * killTimerMultiplier;
-            minutes = (float)Math.Floor(killTimer / 60);
-            seconds = (float)Math.Floor(killTimer) % 60;
-            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            infectionBar.value = infectionBar.maxValue - killTimer;
         }
-        else{
-            timerText.text = "00:00";
-            Kill();
-        }
+        else if(!dying)
+                Kill();
         
         if(moveL && !moveR && !dying){
             rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
@@ -115,7 +108,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
 
-        if(rb.velocity.magnitude > 0 && Time.timeScale != 1 && !dying){
+        if(rb.velocity.magnitude > 0 && Time.timeScale == 1 && !dying){
             if(!steps.isPlaying)
                 steps.Play();
             direction = rb.velocity.normalized;
@@ -127,7 +120,7 @@ public class PlayerController : MonoBehaviour
             if(incrementDmg)
                 baseDamage += 0.25f;
             if(incrementHealth)
-                killTimer += 1;
+                killTimer += infectionBar.maxValue * 0.005f;
             incs = true;
         }
         else if(incs == true && enemiesKilled % 25 != 0)
@@ -136,9 +129,9 @@ public class PlayerController : MonoBehaviour
         if(subTime)
             subTimer -= Time.deltaTime;
 
-        if(subTimer <= 0 && killTimerMultiplier >= 0.95f){
-            killTimerMultiplier -= 0.05f;
-            timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
+        if(subTimer <= 0 && killTimerMultiplier >= 0.15f){
+            killTimerMultiplier -= 0.1f;
+            timerMultiplier.text = Math.Round(killTimerMultiplier, 2) + "x";
             subTimer = 10;
         }
     }
@@ -149,8 +142,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine("Die");
     }
     public void LevelUp(){
-        if(UpgradeScreen.GetComponent<UpgradeScreen>().upgradeCards.Count > 0){
-            scrollbar.value = 1;
+        scrollbar.value = 1;
             level += 1;
             if(level <= 5)
                 xpCap = 10 * level;
@@ -159,6 +151,7 @@ public class PlayerController : MonoBehaviour
             else
                 xpCap = 40 * level;
             leveltxt.text = "Level: " + level;
+        if(UpgradeScreen.GetComponent<UpgradeScreen>().upgradeCards.Count > 0){
             Time.timeScale = 0f;
             UpgradeScreen.SetActive(true);
             UpgradeScreen.GetComponent<UpgradeScreen>().Activate();
@@ -175,13 +168,16 @@ public class PlayerController : MonoBehaviour
         if((other.gameObject.tag == "Enemy Attack" || other.gameObject.tag == "Enemy") && iframes <= 0){
             if(other.gameObject.GetComponent<EnemyBase>() != null){
                 killTimerMultiplier += other.gameObject.GetComponent<EnemyBase>().baseDamage * armour;
-                multiplierScale += other.gameObject.GetComponent<EnemyBase>().baseDamage * armour * 0.75f;
+                multiplierScale += 0.5f + (other.gameObject.GetComponent<EnemyBase>().baseDamage * armour);
             }
             else if(other.gameObject.GetComponent<BulletBase>() != null){
                 killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage * armour;
-                multiplierScale += other.gameObject.GetComponent<BulletBase>().damage * armour * 0.75f;
+                multiplierScale += 0.5f + (other.gameObject.GetComponent<BulletBase>().damage * armour);
             }
-            timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
+            if(multiplierScale > 1.75f){
+                multiplierScale = 1.75f;
+            }
+            timerMultiplier.text = Math.Round(killTimerMultiplier, 2) + "x";
             iframes = 0.5f;
             redVal = 0;
             StartCoroutine("Damage");
@@ -191,8 +187,11 @@ public class PlayerController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other){
         if(other.gameObject.tag == "Enemy Attack" && iframes <= 0){
             killTimerMultiplier += other.gameObject.GetComponent<BulletBase>().damage * armour;
-            timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
-            multiplierScale += other.gameObject.GetComponent<BulletBase>().damage * armour * 0.75f;
+            timerMultiplier.text = Math.Round(killTimerMultiplier, 2) + "x";
+            multiplierScale += other.gameObject.GetComponent<BulletBase>().damage * armour;
+            if(multiplierScale > 1.75f){
+                multiplierScale = 1.75f;
+            }
             Destroy(other.gameObject);
             iframes = 0.5f;
             redVal = 0;
@@ -226,7 +225,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private IEnumerator Damage(){
-        AudioMaster.instance.PlaySFXClip(hurtSound, transform, 0.25f);
+        AudioMaster.instance.PlaySFXClip(hurtSound, transform, 0.5f);
         gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         Camera.main.transform.localPosition = new Vector3(0,0,-10) + UnityEngine.Random.insideUnitSphere * 0.5f;
         yield return new WaitForSeconds(0.025f);
@@ -248,11 +247,7 @@ public class PlayerController : MonoBehaviour
 
     public void HealthMultiplier(float percent){
         killTimerMultiplier += percent;
-        timerMultiplier.text = Math.Round(killTimerMultiplier * 100, 0) + "%";
-    }
-
-    public void MoveSpeed(float speed){
-        moveSpeed += speed;
+        timerMultiplier.text = Math.Round(killTimerMultiplier, 2) + "x";
     }
 
     public void MoveSpeedMultiplier(float speed){
@@ -307,12 +302,25 @@ public class PlayerController : MonoBehaviour
         armour = 0.5f;
     }
 
-    public void Pierce(){
-        pierce = true;
-    }
-
     public void Vaccine(){
         subTime = true;
+    }
+
+    public void Amputate(){
+        if(killTimerMultiplier > 1){
+            killTimerMultiplier = 1;
+            timerMultiplier.text = Math.Round(killTimerMultiplier, 2) + "x";
+            MoveSpeedMultiplier(0.75f);
+        }
+    }
+
+    public void Antibiotics(){
+        killTimer += infectionBar.maxValue * 0.15f;
+        infectionBar.maxValue = infectionBar.maxValue * 1.15f;
+    }
+
+    public void Pierce(){
+        pierce = true;
     }
 
 }

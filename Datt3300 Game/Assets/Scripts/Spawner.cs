@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public class Spawner : MonoBehaviour
 {
@@ -38,7 +32,7 @@ public class Spawner : MonoBehaviour
             spawnInterval -= Time.deltaTime;
         else{
             for(int y = 0; y < n; y++){
-                rand = UnityEngine.Random.Range(0, 101);
+                rand = Random.Range(0, 101);
                 for(int i = 0; i < weights.Length; i++){
                     if(rand >= weights[i]){
                         Spawn(enemyPrefabs[i]);
@@ -82,26 +76,26 @@ public class Spawner : MonoBehaviour
         if(bottom < miny)
             bottom = miny;
         Vector3 spawnPos = Vector3.zero;
-        int topOrSides = UnityEngine.Random.Range(0, 4);
+        int topOrSides = Random.Range(0, 4);
         while(true){
             if(topOrSides == 0 && top <= maxy - 1){
-                spawnPos = new Vector3(UnityEngine.Random.Range(left, right), top - transform.parent.position.y, 0);
+                spawnPos = new Vector3(Random.Range(left, right), top - transform.parent.position.y, 0);
                 break;
             }
             else if(topOrSides == 1 && bottom > miny + 1){
-                spawnPos = new Vector3(UnityEngine.Random.Range(left, right), bottom - transform.parent.position.y, 0);
+                spawnPos = new Vector3(Random.Range(left, right), bottom - transform.parent.position.y, 0);
                 break;
             }
             else if(topOrSides == 2){
-                spawnPos = new Vector3(left, UnityEngine.Random.Range(bottom - transform.parent.position.y, top - transform.parent.position.y), 0);
+                spawnPos = new Vector3(left, Random.Range(bottom - transform.parent.position.y, top - transform.parent.position.y), 0);
                 break;
             }
             else if(topOrSides == 3){
-                spawnPos = new Vector3(right, UnityEngine.Random.Range(bottom - transform.parent.position.y, top - transform.parent.position.y), 0);
+                spawnPos = new Vector3(right, Random.Range(bottom - transform.parent.position.y, top - transform.parent.position.y), 0);
                 break;
             }
             else if(topOrSides > 3)
-                topOrSides = UnityEngine.Random.Range(0, 4);
+                topOrSides = Random.Range(0, 4);
             else
                 topOrSides += 1;
         } 

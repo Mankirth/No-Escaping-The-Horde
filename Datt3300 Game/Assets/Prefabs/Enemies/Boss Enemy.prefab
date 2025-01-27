@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d88efe1d1757cd4bb1e2b9087814c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 3000
+  health: 2000
   baseDamage: 1.5
   xp: {fileID: 6339262946618120700, guid: 9c9eaf729a376c44e95888ed9e18425b, type: 3}
   explosion: {fileID: 7993945212602426650, guid: e7c8d83744e04424da66602426c3a6eb, type: 3}
@@ -154,7 +154,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -192,7 +192,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!95 &1841494622635963968
 Animator:
@@ -205,7 +205,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 822e95733c6b6c54abd3b68788053dc0, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0

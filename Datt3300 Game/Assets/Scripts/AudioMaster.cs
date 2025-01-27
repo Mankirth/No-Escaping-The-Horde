@@ -9,9 +9,9 @@ public class AudioMaster : MonoBehaviour
     public static AudioMaster instance;
     [SerializeField] private AudioSource sfxObj;
     [SerializeField] public AudioSource[] musicStems;
-    private bool fading;
-    private int i;
-    // https://www.youtube.com/watch?v=DU7cgVsU2rM
+    private bool fading, fadingIntro;
+    private int i, givenI;
+
     private void Awake(){
         if(instance == null){
             instance = this;
@@ -27,7 +27,6 @@ public class AudioMaster : MonoBehaviour
     }
 
     public void PlaySFXClip(AudioClip audioClip, Transform spawnTransform, float volume){
-        Debug.Log(audioClip.name);
         AudioSource audioSource = Instantiate(sfxObj, spawnTransform.position, Quaternion.identity);
         audioSource.clip = audioClip;
         audioSource.volume = volume;
@@ -46,17 +45,20 @@ public class AudioMaster : MonoBehaviour
 
     public void AddLayer(){
         i++;
-        if(i < 9){
+        if(i < 6){
             StartCoroutine("Fade");
+        }
+        else{
+            i = 5;
         }
     }
 
     public void ResetLayers(){
-        foreach(AudioSource layer in instance.musicStems){
-            layer.volume = 0;
-        }
+        fading = false;
+        givenI = i;
+        StopCoroutine("IntroFade");
+        StartCoroutine("IntroFade");
         i = 0;
-        musicStems[i].volume = 1;
     }
 
     void FixedUpdate(){
@@ -64,13 +66,39 @@ public class AudioMaster : MonoBehaviour
             instance.musicStems[i-1].volume -= Time.deltaTime;
             instance.musicStems[i].volume += Time.deltaTime;
         }
+
+        if(fadingIntro && givenI != 0 && instance.musicStems[givenI].volume >= 0.02){
+            instance.musicStems[givenI].volume -= Time.deltaTime;
+            if(SceneManager.GetActiveScene().name != "Gameplay")
+                instance.musicStems[0].volume += Time.deltaTime;
+            else
+                instance.musicStems[1].volume += Time.deltaTime;
+        }
     }
 
     private IEnumerator Fade(){
+        givenI = i;
         fading = true;
         yield return new WaitForSeconds(1);
         fading = false;
-        instance.musicStems[i-1].volume = 0;
-        musicStems[i].volume = 1;
+        if(!fadingIntro){
+            musicStems[givenI-1].volume = 0;
+            musicStems[givenI].volume = 1;
+        }
     }
+
+    private IEnumerator IntroFade(){
+        fadingIntro = true;
+        Scene currentScene = SceneManager.GetActiveScene();
+        yield return new WaitForSeconds(1);
+        fadingIntro = false;
+        foreach(AudioSource layer in instance.musicStems){
+            layer.volume = 0;
+        }
+        if(SceneManager.GetActiveScene().name == "Gameplay" && currentScene == SceneManager.GetActiveScene())
+            instance.musicStems[1].volume = 1;
+        else
+            instance.musicStems[0].volume = 1;
+    }
+
 }

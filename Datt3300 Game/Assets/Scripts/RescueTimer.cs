@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System;
@@ -8,14 +7,14 @@ using Unity.Mathematics;
 public class RescueTimer : MonoBehaviour
 {
     public float timer;
-    [SerializeField] private GameObject player, rescueLadder;
+    [SerializeField] private GameObject player, rescueLadder, leftArrow, rightArrow;
     [SerializeField] private TMP_Text escape;
     private float minutes, seconds;
     private bool triggered = false;
     private Vector3 spawnPos;
 
     void Start(){
-        InvokeRepeating("Layer", 25, 25);
+        InvokeRepeating("Layer", 60, 60);
     }
 
     void Layer(){
@@ -45,12 +44,28 @@ public class RescueTimer : MonoBehaviour
             escape.gameObject.SetActive(true);
             timer = 0;
             triggered = true;
+            gameObject.GetComponent<TMP_Text>().text = "0:00";
+            StartCoroutine("Arrow");
         }
-        if(triggered){
-            if((rescueLadder.transform.position - player.transform.position).x < 0)
-                escape.text = "<-- ESCAPE";
-            else
-                escape.text = "ESCAPE -->";
+    }
+
+    private IEnumerator Arrow(){
+        yield return new WaitForSeconds(0.5f);
+        if((rescueLadder.transform.position - player.transform.position).x < 0){
+            leftArrow.SetActive(true);
+            rightArrow.SetActive(false);
         }
+        else{
+            leftArrow.SetActive(false);
+            rightArrow.SetActive(true);
+        }
+        yield return new WaitForSeconds(1);
+        leftArrow.SetActive(false);
+        rightArrow.SetActive(false);
+        StartCoroutine("Arrow");
+    }
+
+    private void OnDestroy(){
+        StopAllCoroutines();
     }
 }

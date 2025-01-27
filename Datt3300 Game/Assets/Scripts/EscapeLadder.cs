@@ -7,7 +7,6 @@ public class EscapeLadder : MonoBehaviour
 {
     void OnTriggerEnter2D(Collider2D other){
         if(other.gameObject.name == "Player"){
-            Debug.Log("Winer!");
             GameObject.FindGameObjectWithTag("UpgradeScreen").GetComponent<GameMenu>().Win();
         }
     }

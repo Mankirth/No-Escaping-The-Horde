@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExplodingEnemy : MonoBehaviour
 {
     // Update is called once per frame
-    void FixedUpdate()
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if(Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) <= 2){
+        if(other.tag == "Player"){
             gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
             Destroy(gameObject, 0.5f);
         }

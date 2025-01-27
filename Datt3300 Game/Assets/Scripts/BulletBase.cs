@@ -13,17 +13,10 @@ public class BulletBase : MonoBehaviour
     
     void Start(){
         if(bounce != null && GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().pierce){
-            //destroyOnHit = false;
             bounce.enabled = true;
         }
-    }
-    void FixedUpdate(){
-        if(useDeathTimer){
-            if(deathTimer > 0)
-                deathTimer -= Time.deltaTime;
-            else
-                Destroy(gameObject);
-        }
+        if(useDeathTimer)
+            Destroy(gameObject, deathTimer);
     }
 
     void OnTriggerEnter2D(Collider2D other){

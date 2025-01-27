@@ -10,17 +10,11 @@ public class DamagingArea : MonoBehaviour
     
     void Start(){
         dmgTimer = 0.5f * GameObject.Find("Player").GetComponent<PlayerController>().fireRateMultiplier;
+        InvokeRepeating("Pulse", 0, dmgTimer);
     }
     
-    void FixedUpdate(){
-        dmgTimer -= Time.deltaTime;
-        if(dmgTimer <= 0){
-            Pulse();
-            dmgTimer = 0.5f * GameObject.Find("Player").GetComponent<PlayerController>().fireRateMultiplier;
-        }
-    }
     void Pulse(){
-        foreach(Collider2D other in Physics2D.OverlapCircleAll(transform.position, transform.localScale.x / 2)){
+        foreach(Collider2D other in Physics2D.OverlapCircleAll(transform.position, 3f)){
             if(other.tag == "Enemy"){
                 other.GetComponent<EnemyBase>().hp.Value -= (int)(GameObject.Find("Player").GetComponent<PlayerController>().baseDamage * dmgMultiplier);
                 other.attachedRigidbody.velocity = Vector3.zero;

@@ -11,7 +11,6 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private GameObject xp, explosion, explosionPrefab;
     [SerializeField] private bool exploding;
     [SerializeField] private AudioClip deathSound;
-    private float dmgTimer;
     private Color origColor;
     private bool firstCall = true;
 
@@ -20,24 +19,22 @@ public class EnemyBase : MonoBehaviour
         hp.Value = health;
         origColor = gameObject.GetComponent<SpriteRenderer>().color;
     }
-
-    void FixedUpdate(){
-        if(dmgTimer > 0)
-            dmgTimer -= Time.deltaTime;
-        else
-            gameObject.GetComponent<SpriteRenderer>().color = origColor;
-    }
-
     void OnHpChanged(object target, Observable<int>.ChangedEventArgs args){
         if(!firstCall){
             if(hp.Value <= 0)
                 Destroy(gameObject);
             if(gameObject.GetComponent<SpriteRenderer>().color != Color.red)
                 origColor = gameObject.GetComponent<SpriteRenderer>().color;
+            StopCoroutine("DmgColor");
             gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-            dmgTimer = 0.1f;
+            StartCoroutine("DmgColor");
         }
         firstCall = false;
+    }
+
+    private IEnumerator DmgColor(){
+        yield return new WaitForSeconds(0.1f);
+        gameObject.GetComponent<SpriteRenderer>().color = origColor;
     }
 
     void OnTriggerEnter2D(Collider2D other){
@@ -65,7 +62,7 @@ public class EnemyBase : MonoBehaviour
             AudioMaster.instance.PlaySFXClip(deathSound, transform, 1f);
             hp.Changed -= OnHpChanged;
             if(GameObject.FindGameObjectWithTag("Player") != null){
-                Instantiate(xp, transform.position, Quaternion.identity);
+                Instantiate(xp, transform.position, Quaternion.Euler(transform.rotation.x, transform.rotation.y, 90));
                 GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().enemiesKilled += 1;
             }
             if(exploding)

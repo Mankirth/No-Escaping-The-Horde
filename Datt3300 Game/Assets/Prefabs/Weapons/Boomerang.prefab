@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fd233df34792274caf87299284ed170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireTimer: 15
+  fireTimer: 10
   bulletSpeed: 20
   dmgMultiplier: 1.5
   BoomerangPrefab: {fileID: 2349651010861520041, guid: a318fb9606a78db45b07a749ff6fc80d, type: 3}
