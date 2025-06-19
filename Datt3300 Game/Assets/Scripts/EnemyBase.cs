@@ -21,10 +21,15 @@ public class EnemyBase : MonoBehaviour
     }
     void OnHpChanged(object target, Observable<int>.ChangedEventArgs args){
         if(!firstCall){
-            if(hp.Value <= 0)
+            if (hp.Value <= 0 && !exploding)
                 Destroy(gameObject);
-            if(gameObject.GetComponent<SpriteRenderer>().color != Color.red)
-                origColor = gameObject.GetComponent<SpriteRenderer>().color;
+            else if (hp.Value <= 0){
+                transform.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                Destroy(gameObject, 0.25f);
+            }
+            if (gameObject.GetComponent<SpriteRenderer>().color != Color.red)
+                    origColor = gameObject.GetComponent<SpriteRenderer>().color;
             StopCoroutine("DmgColor");
             gameObject.GetComponent<SpriteRenderer>().color = Color.red;
             StartCoroutine("DmgColor");

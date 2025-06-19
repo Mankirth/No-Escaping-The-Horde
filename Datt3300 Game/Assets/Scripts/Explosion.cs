@@ -20,8 +20,15 @@ public class Explosion : MonoBehaviour
     {
         GameObject spawned = Instantiate(explosionfx, transform.position, Quaternion.identity);
         Destroy(spawned, 0.25f);
-        yield return new WaitForSeconds(0.1f);
-        
+        if (tag == "Enemy Attack"){
+            Camera.main.transform.localPosition = new Vector3(0, 0, -10) + UnityEngine.Random.insideUnitSphere * 0.25f;
+            yield return new WaitForSeconds(0.025f);
+            Camera.main.transform.localPosition = new Vector3(0, 0, -10) + UnityEngine.Random.insideUnitSphere * 0.25f;
+            yield return new WaitForSeconds(0.025f);
+            Camera.main.transform.localPosition = new Vector3(0, 0, -10);
+        }
+        else
+            yield return new WaitForSeconds(.25f);
         Destroy(gameObject);
     }
 }

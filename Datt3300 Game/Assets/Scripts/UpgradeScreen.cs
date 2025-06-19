@@ -21,7 +21,7 @@ public class UpgradeScreen : MonoBehaviour
         for(int i = 0; i < 3; i++){
             if(cardPool.Count > 0){
                 int chosen = Random.Range(0, cardPool.Count);
-                cardPool[chosen].GetComponent<RectTransform>().position = transform.position + new Vector3(-9+ (i * 9), 0, 0);
+                cardPool[chosen].GetComponent<RectTransform>().position = transform.position + new Vector3(-9+ (i * 9), -1.5f, 0);
                 cardPool.RemoveAt(chosen);
             }
         }
@@ -31,6 +31,7 @@ public class UpgradeScreen : MonoBehaviour
         fading = true;
         opacity = 0;
         title.color = new Color32(255, 255, 255, (byte)opacity);
+        gameObject.GetComponent<RectTransform>().localPosition = gameObject.GetComponent<RectTransform>().localPosition + new Vector3(0, -1000, 0);
         StartCoroutine("Stupid");
         yield return new WaitForSecondsRealtime(0.5f);
         fading = false;
@@ -43,6 +44,10 @@ public class UpgradeScreen : MonoBehaviour
             if(fading && opacity < 255){
                 opacity += 21.25f;
                 title.color = new Color32(255, 255, 255, (byte)opacity);
+            }
+            if (fading && gameObject.GetComponent<RectTransform>().localPosition.y < 0f)
+            {
+                gameObject.GetComponent<RectTransform>().localPosition = gameObject.GetComponent<RectTransform>().localPosition + new Vector3(0, 100f, 0);
             }
             dumb += 0.02f;
         }

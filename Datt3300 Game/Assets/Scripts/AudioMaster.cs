@@ -67,12 +67,17 @@ public class AudioMaster : MonoBehaviour
             instance.musicStems[i].volume += Time.deltaTime;
         }
 
-        if(fadingIntro && givenI != 0 && instance.musicStems[givenI].volume >= 0.02){
-            instance.musicStems[givenI].volume -= Time.deltaTime;
+        if(fadingIntro){
             if(SceneManager.GetActiveScene().name != "Gameplay")
-                instance.musicStems[0].volume += Time.deltaTime;
-            else
-                instance.musicStems[1].volume += Time.deltaTime;
+                instance.musicStems[1].volume -= Time.deltaTime;
+            instance.musicStems[2].volume -= Time.deltaTime;
+            instance.musicStems[3].volume -= Time.deltaTime;
+            instance.musicStems[4].volume -= Time.deltaTime;
+            instance.musicStems[5].volume -= Time.deltaTime;
+            if (SceneManager.GetActiveScene().name != "Gameplay")
+                    instance.musicStems[0].volume += Time.deltaTime;
+                else
+                    instance.musicStems[1].volume += Time.deltaTime;
         }
     }
 

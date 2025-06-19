@@ -103,7 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 2000
   baseDamage: 1.5
-  xp: {fileID: 6339262946618120700, guid: 9c9eaf729a376c44e95888ed9e18425b, type: 3}
+  xp: {fileID: 7641845090566887078, guid: 98ae935555d128b419ab52169070329a, type: 3}
   explosion: {fileID: 7993945212602426650, guid: e7c8d83744e04424da66602426c3a6eb, type: 3}
   explosionPrefab: {fileID: 0}
   exploding: 0

@@ -54,7 +54,7 @@ public class GameMenu : MonoBehaviour
         ButtonSound();
         Time.timeScale = 1;
         AudioMaster.instance.ResetLayers();
-        SceneManager.LoadScene("TitleNoIntro");
+        SceneManager.LoadScene("MainMenu");
     }
     
     public void Pause(){
